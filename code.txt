@@ -1,0 +1,97 @@
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define BLYNK_TEMPLATE_ID "TMPL3Zsrc0kUd"
+#define BLYNK_TEMPLATE_NAME "grass robot"
+
+#define ENA D6
+#define IN1 D1
+#define IN2 D2
+#define IN3 D3
+#define IN4 D4
+#define ENB D5
+
+bool isForwardRequested = false;
+bool isBackwardRequested = false;
+bool isLeftRequested = false;
+bool isRightRequested = false;
+int speed = 0;
+
+char auth[] = "iGCbZXfNw4rAA9U9rQuLkCKqpzsuNvcZ";
+char ssid[] = "Yuka";
+char pass[] = "sree1234";
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(ENA, OUTPUT);
+  pinMode(IN1, OUTPUT);
+  pinMode(IN2, OUTPUT);
+  pinMode(IN3, OUTPUT);
+  pinMode(IN4, OUTPUT);
+  pinMode(ENB, OUTPUT);
+
+  Blynk.begin(auth, ssid, pass, "blynk.cloud", 80);
+}
+
+void loop() {
+  Blynk.run();
+  controlRobot();
+}
+
+BLYNK_WRITE(V0) { 
+  isForwardRequested = param.asInt();
+}
+
+BLYNK_WRITE(V1) { 
+  isBackwardRequested = param.asInt(); 
+}
+
+BLYNK_WRITE(V2) { 
+  isLeftRequested = param.asInt(); 
+  Serial.print("Left: ");
+  Serial.println(isLeftRequested);
+}
+
+BLYNK_WRITE(V3) { 
+  isRightRequested = param.asInt(); 
+}
+
+BLYNK_WRITE(V5) { 
+  speed = param.asInt(); 
+}
+
+void controlRobot() {
+  speed = map(speed, 0, 1, 0, 255);
+  analogWrite(ENA, speed);
+  analogWrite(ENB, speed);
+
+  if (isForwardRequested){
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);    
+  }
+  else if(isBackwardRequested){
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+  }
+  else if (isLeftRequested) {
+    digitalWrite(IN1, HIGH);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, HIGH);
+  } else if (isRightRequested) {
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, HIGH);
+    digitalWrite(IN3, HIGH);
+    digitalWrite(IN4, LOW);
+  }
+  else{
+    digitalWrite(IN1, LOW);
+    digitalWrite(IN2, LOW);
+    digitalWrite(IN3, LOW);
+    digitalWrite(IN4, LOW);
+  }
+}
