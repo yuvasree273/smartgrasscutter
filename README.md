@@ -1,7 +1,3 @@
-Here’s a detailed `README.md` documentation for your **Smart Grass Cutting Robot** project:
-
----
-
 # Smart Grass Cutting Robot
 
 This project demonstrates the design and implementation of a smart grass-cutting robot controlled remotely using the **Blynk** mobile application. The robot uses a Wi-Fi-enabled **NodeMCU ESP8266** module to communicate with the Blynk cloud platform, allowing users to control the robot's movements and speed from a smartphone.
